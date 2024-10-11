@@ -1,57 +1,39 @@
 import { useState } from "react";
 function SelectMedia() {
-
-  // async function getMedia(constraints) {
-  //   let stream = null;
-  
+  const video = document.querySelector("video");
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  // async function getMediaDevices() {
   //   try {
-  //     stream = await navigator.mediaDevices.getUserMedia(constraints);
-  //     /* use the stream */
+  //     const allDevices = await navigator.mediaDevices.enumerateDevices();
+
+  //     setDevices(allDevices)
   //   } catch (err) {
-  //     /* handle the error */
+  //     console.error('Error accessing media devices:', err);
   //   }
   // }
 
-  // getMedia({
-  //   audio: true,
-  //   video: {
-  //     width: { min: 1024, ideal: 1280, max: 1920 },
-  //     height: { min: 576, ideal: 720, max: 1080 },
-  //   },
-  // });
-
-  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  async function getMediaDevices() {
-    try {
-      const allDevices = await navigator.mediaDevices.enumerateDevices();
-      
-      setDevices(allDevices)
-    } catch (err) {
-      console.error('Error accessing media devices:', err);
-    }
-  }
-  
-  // Call the function
- 
-  
-
+  const captureMedia = () => {
+    navigator.mediaDevices
+      .getDisplayMedia({
+        audio: true,
+        video: {
+          width: 320,
+          height: 240,
+          frameRate: 30,
+        },
+      })
+      .then((stream) => {
+        video.srcObject = stream;
+        video.onloadedmetadata = (e) => video.play();
+      })
+      .catch((e) => console.log(e));
+  };
   return (
-<>
-<button onClick={() => getMediaDevices()}>
-  Get list of Media Sources
-</button>
-{devices.length > 0 ? (
-          devices.map((device, index) => (
-            <p key={index}>
-              {device.kind}: {device.label || "Unnamed device"} (ID: {device.deviceId})
-            </p>
-          ))
-        ) : (
-          <p>No devices found</p>
-        )}
-</>
-    
-  )
+    <>
+      <button onClick={() => captureMedia()}>Display video of screen</button>
+      <video width="320" height="240" autoPlay></video>
+    </>
+  );
 }
 
-export default SelectMedia
+export default SelectMedia;
