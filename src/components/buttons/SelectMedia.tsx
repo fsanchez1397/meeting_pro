@@ -3,12 +3,11 @@ import { useRef, useState } from "react";
 function SelectMedia() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoURL, setVideoURL] = useState<string | undefined>(undefined);
-  const [downloadText, setDownloadText] = useState<string>(
-    "No Video to Download"
-  );
+
   let audioStream: MediaStream,
     videoStream: MediaStream,
     mixedStream: MediaStream,
+    recorder: MediaRecorder,
     chunks: Blob[] = [];
 
   const constraintsVideo = {
@@ -53,10 +52,10 @@ function SelectMedia() {
         ]);
       }
       //Create recorder
-      const recorder = new MediaRecorder(mixedStream);
+      recorder = new MediaRecorder(mixedStream);
       recorder.ondataavailable = handleDataAvailable;
       recorder.onstop = handleStop;
-      recorder.start(200);
+      recorder.start(1000);
     } catch (err) {
       console.log(err);
     }
@@ -65,6 +64,7 @@ function SelectMedia() {
   const handleStop = () => {
     const blob = new Blob(chunks, { type: "video/mp4" });
     chunks = [];
+    console.log(blob);
     setVideoURL(URL.createObjectURL(blob));
 
     videoStream.getTracks().forEach((track) => track.stop());
@@ -88,19 +88,18 @@ function SelectMedia() {
       videoRef.current.pause();
     }
   };
-
-  const isDownloadReady = videoURL ? true : false;
-  if (isDownloadReady) {
-    setDownloadText("Download Available");
-  } else {
-    setDownloadText("No Video to Download");
-  }
+  const stopMedia = () => {
+    recorder.stop();
+  };
   return (
     <>
       <video ref={videoRef} width="320" height="240" autoPlay></video>
       <button onClick={playMedia}>Record</button>
       <button onClick={pauseMedia}>Pause</button>
-      <a href={videoURL}>{downloadText}</a>
+      <button onClick={stopMedia}>Stop Recording</button>
+      <a href={videoURL} download="screen-recording.mp4">
+        Download
+      </a>
     </>
   );
 }
