@@ -1,0 +1,14 @@
+.displayBtns {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  min-width: 250px;
+  background-color: navy;
+  color: white;
+  border: none;
+}
+.displayBtns:hover {
+  background-color: white;
+  color: navy;
+  border: none;
+}

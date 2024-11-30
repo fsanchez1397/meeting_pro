@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-
+import styles from "./SelectMedia.module.css";
 function SelectMedia() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoURL, setVideoURL] = useState<string | undefined>(undefined);
@@ -11,11 +11,7 @@ function SelectMedia() {
     chunks: Blob[] = [];
 
   const constraintsVideo = {
-    video: {
-      width: 320,
-      height: 240,
-      frameRate: 30,
-    },
+    video: true,
   };
   const constraintsAudio = {
     audio: {
@@ -32,6 +28,8 @@ function SelectMedia() {
   const setupStream = async () => {
     try {
       audioStream = await navigator.mediaDevices.getUserMedia(constraintsAudio);
+      console.log(audioStream);
+
       videoStream = await navigator.mediaDevices.getDisplayMedia(
         constraintsVideo
       );
@@ -91,13 +89,32 @@ function SelectMedia() {
   const stopMedia = () => {
     recorder.stop();
   };
+
+  const supported = navigator.mediaDevices;
+  console.log(supported);
   return (
     <>
-      <video ref={videoRef} width="320" height="240" autoPlay></video>
-      <button onClick={playMedia}>Record</button>
-      <button onClick={pauseMedia}>Pause</button>
-      <button onClick={stopMedia}>Stop Recording</button>
-      <a href={videoURL} download="screen-recording.mp4">
+      <video
+        className={styles.recordingVideo}
+        ref={videoRef}
+        width="auto"
+        height="auto"
+        autoPlay
+      ></video>
+      <button className={styles.displayBtns} onClick={playMedia}>
+        Record
+      </button>
+      <button className={styles.displayBtns} onClick={pauseMedia}>
+        Pause
+      </button>
+      <button className={styles.displayBtns} onClick={stopMedia}>
+        Stop Recording
+      </button>
+      <a
+        className={styles.displayBtns}
+        href={videoURL}
+        download="screen-recording.mp4"
+      >
         Download
       </a>
     </>
