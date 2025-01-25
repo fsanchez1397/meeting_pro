@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-
-import RecordScreen from "./capturers/RecordScreen";
 import "./App.css";
 import ScreensDropdown from "./capturers/ScreensDropdown";
 import AudioDropdown from "./capturers/AudioDropdown";
+import LiveVideo from "./displays/LiveVideo";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -12,7 +11,6 @@ function App() {
     videoDevice: {
       name: "",
       id: "",
-
       display_id: "",
       appIcon: null,
     },
@@ -67,8 +65,7 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
-        {/* Should remove and use this to activate recording */}
-        <RecordScreen setScreens={setScreens} />
+        <LiveVideo streamInfo={streamInfo} />
       </div>
     </>
   );

@@ -16,7 +16,8 @@ function ScreensDropdown({
   };
 
   useEffect(() => {
-    console.log(streamInfo);
+    //this runs once
+    console.log("streamInfo", streamInfo);
     window.electron.updateBackendStream(streamInfo);
   }, [streamInfo]);
 

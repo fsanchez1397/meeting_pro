@@ -21,6 +21,9 @@ interface ScreensDropdownProps {
 interface AudioDropDownProps {
   audioDevices: AudioDevicesInfo[];
 }
+interface LiveVideoProps {
+  streamInfo: StreamInfo;
+}
 interface StreamInfo {
   audioDevice: "";
   videoDevice: ScreensInfo;
