@@ -7,7 +7,7 @@ electron.contextBridge.exposeInMainWorld("electron", {
   getAudioDevics: () => {},
   subscribeDevices: (callback) => {
     electron.ipcRenderer.on("latestDevices", (_, sources) => {
-      callback(sources);
+      callback(sources.screenSources);
     });
   },
 } satisfies Window["electron"]);

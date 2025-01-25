@@ -31,7 +31,14 @@ function App() {
   const setAudioDevices = (info: AudioDevicesInfo[]) => {
     setAllAudio(info);
   };
-  useEffect(() => {}, []);
+
+  //unsubscribe from the devices
+  useEffect(() => {
+    window.electron.subscribeDevices((sources) => {
+      console.log("sources", sources);
+      setScreens(sources);
+    });
+  }, []);
   return (
     <>
       <div>
@@ -40,7 +47,9 @@ function App() {
         </a>
       </div>
       <h1>Keep Going I Still Believe!!</h1>
+      <h2>Screens</h2>
       <ScreensDropdown screens={allScreens} />
+      <h2>Audio Devices</h2>
       <AudioDropdown audioDevices={allAudio} />
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>

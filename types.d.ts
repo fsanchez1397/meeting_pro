@@ -3,7 +3,7 @@ interface Window {
     subscribeStats: (callback: (stats: object) => void) => void;
     getdata: (e: void) => void;
     getAudioDevics: () => void;
-    subscribeDevices: (callback: (screenInfo: string[]) => void) => void;
+    subscribeDevices: (callback: (screenInfo: ScreensInfo[]) => void) => void;
   };
 }
 interface RecordScreenProps {
