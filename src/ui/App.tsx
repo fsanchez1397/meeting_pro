@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
+
 import RecordScreen from "./capturers/RecordScreen";
 import "./App.css";
 import ScreensDropdown from "./capturers/ScreensDropdown";
@@ -9,7 +9,13 @@ function App() {
   const [count, setCount] = useState(0);
   const [streamInfo, setStreamInfo] = useState<StreamInfo>({
     audioDevice: "",
-    videoDevice: "",
+    videoDevice: {
+      name: "",
+      id: "",
+
+      display_id: "",
+      appIcon: null,
+    },
     allAudioDevices: [],
     allVideoDevices: [],
     audioConstraints: null,
@@ -31,14 +37,16 @@ function App() {
   const setAudioDevices = (info: AudioDevicesInfo[]) => {
     setAllAudio(info);
   };
-  const updateStreamInfo = (e: string, newVal) => {
+  //ToDo: assign types to the event and newVal
+  const updateStreamInfo = (e: string, newVal: ScreensInfo) => {
     switch (e) {
       case "updateScreen":
         setStreamInfo({ ...streamInfo, videoDevice: newVal });
+
         break;
     }
   };
-  //unsubscribe from the devices
+  //ToDo: unsubscribe from the devices
   useEffect(() => {
     window.electron.subscribeDevices((sources) => {
       setScreens(sources);
@@ -46,15 +54,11 @@ function App() {
   }, []);
   return (
     <>
-      <div>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
       <h1>Keep Going I Still Believe!!</h1>
       <h2>Screens</h2>
       <ScreensDropdown
         screens={allScreens}
+        streamInfo={streamInfo}
         updateStreamInfo={updateStreamInfo}
       />
       <h2>Audio Devices</h2>

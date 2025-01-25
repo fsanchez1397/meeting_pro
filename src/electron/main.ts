@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain, session } from "electron";
 import path from "path";
 import { isDev } from "./util.js";
 import { getPreloadPath } from "./pathResolver.js";
@@ -18,4 +18,10 @@ app.on("ready", () => {
 
   // mainWindow.webContents.send();
   pollResources(mainWindow);
+});
+
+ipcMain.on("updateScreen", (event, streamInfo) => {
+  session.defaultSession.setDisplayMediaRequestHandler((req, cb) => {
+    cb({ video: streamInfo.videoDevice, audio: "loopback" });
+  });
 });

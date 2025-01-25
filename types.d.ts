@@ -1,9 +1,9 @@
 interface Window {
   electron: {
     subscribeStats: (callback: (stats: object) => void) => void;
-    getdata: (e: void) => void;
     getAudioDevics: () => void;
     subscribeDevices: (callback: (screenInfo: ScreensInfo[]) => void) => void;
+    updateBackendStream: (e) => void;
   };
 }
 interface RecordScreenProps {
@@ -15,6 +15,7 @@ interface DisplayDevicesProps {
 }
 interface ScreensDropdownProps {
   screens: ScreensInfo[];
+  streamInfo: StreamInfo;
   updateStreamInfo: (e: string, newVal) => void;
 }
 interface AudioDropDownProps {
@@ -22,18 +23,19 @@ interface AudioDropDownProps {
 }
 interface StreamInfo {
   audioDevice: "";
-  videoDevice: "";
+  videoDevice: ScreensInfo;
   allAudioDevices: [];
   allVideoDevices: [];
   audioConstraints: null;
 }
 interface AudioDevicesInfo {
   name: string;
+  id: string;
 }
 interface ScreensInfo {
   name: string;
   id: string;
-  thumbnail: NativeImage;
+
   display_id: string;
   appIcon: NativeImage | null;
 }
