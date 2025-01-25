@@ -31,11 +31,16 @@ function App() {
   const setAudioDevices = (info: AudioDevicesInfo[]) => {
     setAllAudio(info);
   };
-
+  const updateStreamInfo = (e: string, newVal) => {
+    switch (e) {
+      case "updateScreen":
+        setStreamInfo({ ...streamInfo, videoDevice: newVal });
+        break;
+    }
+  };
   //unsubscribe from the devices
   useEffect(() => {
     window.electron.subscribeDevices((sources) => {
-      console.log("sources", sources);
       setScreens(sources);
     });
   }, []);
@@ -48,7 +53,10 @@ function App() {
       </div>
       <h1>Keep Going I Still Believe!!</h1>
       <h2>Screens</h2>
-      <ScreensDropdown screens={allScreens} />
+      <ScreensDropdown
+        screens={allScreens}
+        updateStreamInfo={updateStreamInfo}
+      />
       <h2>Audio Devices</h2>
       <AudioDropdown audioDevices={allAudio} />
       <div className="card">
@@ -58,9 +66,6 @@ function App() {
         {/* Should remove and use this to activate recording */}
         <RecordScreen setScreens={setScreens} />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }

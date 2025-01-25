@@ -15,6 +15,7 @@ interface DisplayDevicesProps {
 }
 interface ScreensDropdownProps {
   screens: ScreensInfo[];
+  updateStreamInfo: (e: string, newVal) => void;
 }
 interface AudioDropDownProps {
   audioDevices: AudioDevicesInfo[];

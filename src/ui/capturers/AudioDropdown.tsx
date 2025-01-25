@@ -4,11 +4,11 @@ import DisplayDevices from "./DisplayDevices";
 function AudioDropdown({ audioDevices }: AudioDropDownProps): JSX.Element {
   return (
     <div>
-      <ul>
+      <select>
         {audioDevices.map((device) => (
           <DisplayDevices device={device} />
         ))}
-      </ul>
+      </select>
     </div>
   );
 }
