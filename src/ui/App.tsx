@@ -18,7 +18,9 @@ function App() {
     allVideoDevices: [],
     audioConstraints: null,
   });
-  const [allAudio, setAllAudio] = useState<AudioDevicesInfo[]>([{ name: "" }]);
+  const [allAudio, setAllAudio] = useState<AudioDevicesInfo[]>([
+    { name: "", id: "" },
+  ]);
   const [allScreens, setAllScreens] = useState<ScreensInfo[]>([
     {
       name: "Empty",
