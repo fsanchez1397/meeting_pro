@@ -24,6 +24,10 @@ interface AudioDropDownProps {
 interface LiveVideoProps {
   streamInfo: StreamInfo;
 }
+interface RecordBtnProps {
+  stream: MediaStream | null;
+}
+
 interface StreamInfo {
   audioDevice: "";
   videoDevice: ScreensInfo;

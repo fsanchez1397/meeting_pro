@@ -64,9 +64,9 @@ function App() {
       <h2>Audio Devices</h2>
       <AudioDropdown audioDevices={allAudio} />
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        {/* <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
-        </button>
+        </button> */}
         <LiveVideo streamInfo={streamInfo} />
       </div>
     </>

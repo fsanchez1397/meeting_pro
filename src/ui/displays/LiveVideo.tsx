@@ -1,17 +1,18 @@
-import { useEffect, useRef, memo } from "react";
-
+import { useEffect, useRef, useState, memo } from "react";
+import RecordBtn from "../capturers/RecordBtn";
+import styles from "./LiveVideo.module.css";
 const arePropsEqual = (prevProps: LiveVideoProps, newProps: LiveVideoProps) => {
   return prevProps.streamInfo === newProps.streamInfo;
 };
 
 function LiveVideo(streamInfo: LiveVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [currStream, setCurrStream] = useState<MediaStream | null>(null);
+
   useEffect(() => {
     const displayOptions = {
       audio: true,
       video: {
-        width: 320,
-        height: 240,
         frameRate: 30,
       },
     };
@@ -21,8 +22,11 @@ function LiveVideo(streamInfo: LiveVideoProps) {
         const stream = await navigator.mediaDevices.getDisplayMedia(
           displayOptions
         );
+
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
+          videoRef.current.onloadedmetadata = () => videoRef.current?.play();
+          setCurrStream(stream);
         }
       } catch (error) {
         console.error(error);
@@ -37,7 +41,18 @@ function LiveVideo(streamInfo: LiveVideoProps) {
     // };
   }, [streamInfo]);
 
-  return <video ref={videoRef} autoPlay></video>;
+  return (
+    <>
+      <video
+        id="current-screen"
+        className={styles.video}
+        ref={videoRef}
+        autoPlay
+        muted
+      ></video>
+      <RecordBtn stream={currStream} />
+    </>
+  );
 }
 
 export default memo(LiveVideo, arePropsEqual);
