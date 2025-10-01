@@ -1,9 +1,57 @@
 {
   "name": "meeting-pro",
+  "productName": "Meeting Pro",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist-electron/main.js",
+  "build": {
+    "appId": "com.meetingpro.app",
+    "productName": "Meeting Pro",
+    "copyright": "Copyright © 2025 Meeting Pro",
+    "directories": {
+      "output": "release/${version}",
+      "buildResources": "build",
+      "app": "."
+    },
+    "files": [
+      "dist-electron/**/*",
+      "dist-react/**/*",
+      "assets/**/*",
+      "!**/node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/owl-face.png"
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "dmg",
+      "icon": "assets/owl-face.icns"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Utility",
+      "icon": "assets/owl-face.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Meeting Pro",
+      "uninstallDisplayName": "Meeting Pro"
+    }
+  },
   "scripts": {
     "dev": "npm-run-all --parallel dev:react dev:electron",
     "dev:react": "vite",

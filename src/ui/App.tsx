@@ -3,9 +3,13 @@ import "./App.css";
 import ScreensDropdown from "./capturers/ScreensDropdown";
 import AudioDropdown from "./capturers/AudioDropdown";
 import LiveVideo from "./displays/LiveVideo";
-
+import AIPrompts from "./components/AIPrompts";
+import RecordBtn from "./capturers/RecordBtn";
+import Tray from "./components/Tray";
+import Settings from "./components/Settings";
 function App() {
-  const [count, setCount] = useState(0);
+  const [currStream, setCurrStream] = useState<MediaStream | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
   const [streamInfo, setStreamInfo] = useState<StreamInfo>({
     audioDevice: "",
     videoDevice: {
@@ -25,7 +29,7 @@ function App() {
     {
       name: "Empty",
       id: "",
-      thumbnail: () => null,
+    
       display_id: "",
       appIcon: null,
     },
@@ -51,24 +55,101 @@ function App() {
     window.electron.subscribeDevices((sources) => {
       setScreens(sources);
     });
+
+    // Enumerate audio devices
+    const getAudioDevices = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioInputs = devices
+          .filter(device => device.kind === 'audioinput')
+          .map(device => ({
+            name: device.label || `Microphone ${device.deviceId.slice(0, 5)}`,
+            id: device.deviceId
+          }));
+        setAudioDevices(audioInputs);
+      } catch (error) {
+        console.error('Error enumerating audio devices:', error);
+      }
+    };
+
+    getAudioDevices();
+
+    // Re-enumerate when devices change
+    navigator.mediaDevices.addEventListener('devicechange', getAudioDevices);
+
+    return () => {
+      navigator.mediaDevices.removeEventListener('devicechange', getAudioDevices);
+    };
   }, []);
   return (
     <>
-      <h1>Keep Going I Still Believe!!</h1>
-      <h2>Screens</h2>
-      <ScreensDropdown
-        screens={allScreens}
-        streamInfo={streamInfo}
-        updateStreamInfo={updateStreamInfo}
-      />
-      <h2>Audio Devices</h2>
-      <AudioDropdown audioDevices={allAudio} />
-      <div className="card">
-        {/* <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button> */}
-        <LiveVideo streamInfo={streamInfo} />
+      <div className="header-bar">
+        <h1 style={{ margin: 0 }}>Meeting Pro</h1>
+        <button onClick={() => setShowSettings(true)} style={{ padding: "0.75rem 1.5rem" }}>
+          ⚙️ Settings
+        </button>
       </div>
+      
+      <div className="main-content">
+        <div id="video-box" style={{ flex: 1, background: "#000" }}>
+          {/*If no video source is active then a Dark Placeholder box else replace with the LiveVideo component*/}
+          {streamInfo.videoDevice.id !== "" ? (
+            <LiveVideo streamInfo={streamInfo} onStreamChange={setCurrStream} />
+          ) : (
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center", 
+              height: "100%",
+              color: "var(--primary)"
+            }}>
+              <p>Select a video source to begin</p>
+            </div>
+          )}
+        </div>
+        
+        <div className="controls-panel" style={{ flex: 1 }}>
+          {/* Recording Controls */}
+          {currStream && (
+            <div>
+              <h3 style={{ margin: "0 0 0.5rem 0", textAlign: "center" }}>Recording Controls</h3>
+              <RecordBtn stream={currStream} />
+            </div>
+          )}
+          
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "0.5rem"
+          }}>
+            <h3 id="screens" style={{ margin: "0 0 0.5rem 0" }}>Video Sources</h3>
+            <ScreensDropdown
+              screens={allScreens}
+              streamInfo={streamInfo}
+              updateStreamInfo={updateStreamInfo}
+            />
+          </div>
+          
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "0.5rem"
+          }}>
+            <h3 id="audio-devices" style={{ margin: "0 0 0.5rem 0" }}>Audio Devices</h3>
+            <AudioDropdown audioDevices={allAudio} />
+          </div>
+          
+          <AIPrompts />
+        </div>
+      </div>
+
+      <div className="tray-section">
+        <Tray />
+      </div>
+      
+      <Settings isOpen={showSettings} onClose={() => setShowSettings(false)} />
     </>
   );
 }

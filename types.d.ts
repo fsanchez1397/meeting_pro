@@ -1,7 +1,7 @@
 interface Window {
   electron: {
     subscribeStats: (callback: (stats: object) => void) => void;
-    getAudioDevics: () => void;
+    getAudioDevices: () => Promise<AudioDevicesInfo[]>;
     subscribeDevices: (callback: (screenInfo: ScreensInfo[]) => void) => void;
     updateBackendStream: (e) => void;
   };
@@ -23,6 +23,7 @@ interface AudioDropDownProps {
 }
 interface LiveVideoProps {
   streamInfo: StreamInfo;
+  onStreamChange?: (stream: MediaStream | null) => void;
 }
 interface RecordBtnProps {
   stream: MediaStream | null;

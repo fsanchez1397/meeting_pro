@@ -1,0 +1,41 @@
+appId: com.meetingpro.app
+productName: Meeting Pro
+copyright: Copyright © 2025 Meeting Pro
+
+directories:
+  output: release/${version}
+  buildResources: build
+
+files:
+  - dist-electron/**/*.js
+  - dist-react/**/*
+  - assets/**/*
+  - package.json
+
+win:
+  target: nsis
+  icon: assets/owl-face.png
+  artifactName: "${productName}-${version}-setup.${ext}"
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: "${productName}"
+  uninstallDisplayName: "${productName}"
+  include: build/installer.nsh
+
+mac:
+  category: public.app-category.utilities
+  target: dmg
+  icon: assets/owl-face.icns
+  artifactName: "${productName}-${version}-setup.${ext}"
+
+linux:
+  target: [AppImage, deb]
+  category: Utility
+  icon: assets/owl-face.png
+  artifactName: "${productName}-${version}.${ext}"

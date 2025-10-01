@@ -5,7 +5,7 @@ const arePropsEqual = (prevProps: LiveVideoProps, newProps: LiveVideoProps) => {
   return prevProps.streamInfo === newProps.streamInfo;
 };
 
-function LiveVideo(streamInfo: LiveVideoProps) {
+function LiveVideo({ streamInfo, onStreamChange }: LiveVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [currStream, setCurrStream] = useState<MediaStream | null>(null);
 
@@ -27,19 +27,26 @@ function LiveVideo(streamInfo: LiveVideoProps) {
           videoRef.current.srcObject = stream;
           videoRef.current.onloadedmetadata = () => videoRef.current?.play();
           setCurrStream(stream);
+          // Pass stream to parent component (App.tsx)
+          if (onStreamChange) {
+            onStreamChange(stream);
+          }
         }
       } catch (error) {
         console.error(error);
       }
     };
     getStream();
-    //ToDo figure if this is necessary
-    // return () => {
-    //   currStream?.getTracks().forEach((track) => {
-    //     track.stop();
-    //   });
-    // };
-  }, [streamInfo]);
+    
+    return () => {
+      // Clean up stream when component unmounts or streamInfo changes
+      if (currStream) {
+        currStream.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+    };
+  }, [streamInfo, onStreamChange]);
 
   return (
     <>
@@ -50,7 +57,7 @@ function LiveVideo(streamInfo: LiveVideoProps) {
         autoPlay
         muted
       ></video>
-      <RecordBtn stream={currStream} />
+      {/* <RecordBtn stream={currStream} /> */}
     </>
   );
 }
