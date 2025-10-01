@@ -4,6 +4,14 @@ interface Window {
     getAudioDevices: () => Promise<AudioDevicesInfo[]>;
     subscribeDevices: (callback: (screenInfo: ScreensInfo[]) => void) => void;
     updateBackendStream: (e) => void;
+    showNotification: (title: string, body: string) => void;
+    getRecordings: () => Promise<any>;
+    saveRecording: (buffer: ArrayBuffer, metadata: any) => Promise<boolean>;
+    updateRecordingMetadata: (id: string, updates: any) => Promise<boolean>;
+    deleteRecording: (id: string) => Promise<boolean>;
+    processWithAI: (provider: string, options: any) => Promise<any>;
+    selectFolder: () => Promise<string | null>;
+    getDefaultRecordingsPath: () => Promise<string>;
   };
 }
 interface RecordScreenProps {
@@ -20,13 +28,18 @@ interface ScreensDropdownProps {
 }
 interface AudioDropDownProps {
   audioDevices: AudioDevicesInfo[];
+  onDeviceSelect?: (deviceId: string) => void;
+  selectedDevice?: string;
 }
 interface LiveVideoProps {
   streamInfo: StreamInfo;
   onStreamChange?: (stream: MediaStream | null) => void;
+  audioDeviceId?: string;
+  captureSystemAudio?: boolean;
 }
 interface RecordBtnProps {
   stream: MediaStream | null;
+  audioDeviceId?: string;
 }
 
 interface StreamInfo {

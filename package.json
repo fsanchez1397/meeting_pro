@@ -1,13 +1,13 @@
 {
   "name": "meeting-pro",
-  "productName": "Meeting Pro",
+  "productName": "Meeting Pro - Beta",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "main": "dist-electron/main.js",
   "build": {
     "appId": "com.meetingpro.app",
-    "productName": "Meeting Pro",
+    "productName": "Meeting Pro - Beta",
     "copyright": "Copyright © 2025 Meeting Pro",
     "directories": {
       "output": "release/${version}",
@@ -24,7 +24,9 @@
       {
         "from": "assets",
         "to": "assets",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "win": {
@@ -37,7 +39,10 @@
       "icon": "assets/owl-face.icns"
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "category": "Utility",
       "icon": "assets/owl-face.png"
     },
@@ -48,8 +53,8 @@
       "deleteAppDataOnUninstall": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Meeting Pro",
-      "uninstallDisplayName": "Meeting Pro"
+      "shortcutName": "Meeting Pro - Beta",
+      "uninstallDisplayName": "Meeting Pro - Beta"
     }
   },
   "scripts": {
@@ -65,11 +70,14 @@
     "dist:linux": "npm run transpile:electron && npm run build && electron-builder --linux --x64"
   },
   "dependencies": {
+    "@google/genai": "^1.21.0",
+    "@google/generative-ai": "^0.24.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@types/node": "^24.6.1",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",

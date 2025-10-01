@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Settings.css";
 
 type SettingsTab = "general" | "output" | "audio" | "video" | "advanced";
@@ -10,6 +10,52 @@ interface SettingsProps {
 
 export default function Settings({ isOpen, onClose }: SettingsProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>("general");
+  const [outputFolder, setOutputFolder] = useState<string>("");
+  const [outputFormat, setOutputFormat] = useState<string>("mkv");
+
+  // Load settings from localStorage on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      // Load output folder
+      const savedFolder = localStorage.getItem('meetingpro_output_folder');
+      if (savedFolder) {
+        setOutputFolder(savedFolder);
+      } else {
+        const defaultPath = await window.electron.getDefaultRecordingsPath();
+        setOutputFolder(defaultPath);
+      }
+      
+      // Load output format
+      const savedFormat = localStorage.getItem('meetingpro_output_format');
+      if (savedFormat) {
+        setOutputFormat(savedFormat);
+      }
+    };
+    
+    if (isOpen) {
+      loadSettings();
+    }
+  }, [isOpen]);
+  
+  // Save settings to localStorage
+  const saveSettings = () => {
+    localStorage.setItem('meetingpro_output_folder', outputFolder);
+    localStorage.setItem('meetingpro_output_format', outputFormat);
+    
+    window.electron.showNotification(
+      "Settings Saved",
+      "Your preferences have been saved successfully."
+    );
+    
+    onClose();
+  };
+
+  const handleBrowseFolder = async () => {
+    const selectedPath = await window.electron.selectFolder();
+    if (selectedPath) {
+      setOutputFolder(selectedPath);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -81,21 +127,27 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
             {activeTab === "output" && (
               <div>
                 <h3>Output Settings</h3>
-                <div className="setting-item">
+                <div id="outputRecording" className="setting-item">
                   <label htmlFor="output-folder">Default Output Folder</label>
                   <div style={{ display: "flex", gap: "0.5rem" }}>
                     <input 
                       type="text" 
                       id="output-folder" 
-                      defaultValue="C:/Users/Documents/Recordings"
+                      value={outputFolder}
+                      onChange={(e) => setOutputFolder(e.target.value)}
                       style={{ flex: 1 }}
+                      placeholder="Select output folder..."
                     />
-                    <button>Browse</button>
+                    <button onClick={handleBrowseFolder}>Browse</button>
                   </div>
                 </div>
                 <div className="setting-item">
                   <label htmlFor="output-format">Output Format</label>
-                  <select id="output-format">
+                  <select 
+                    id="output-format"
+                    value={outputFormat}
+                    onChange={(e) => setOutputFormat(e.target.value)}
+                  >
                     <option value="mkv">MKV</option>
                     <option value="mp4">MP4</option>
                     <option value="webm">WebM</option>
@@ -227,7 +279,7 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
 
         <div className="settings-footer">
           <button onClick={onClose}>Cancel</button>
-          <button onClick={onClose} style={{ background: "var(--success)" }}>Save</button>
+          <button onClick={saveSettings} style={{ background: "var(--success)" }}>Save</button>
         </div>
       </div>
     </div>

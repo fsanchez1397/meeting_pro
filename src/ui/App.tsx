@@ -10,6 +10,8 @@ import Settings from "./components/Settings";
 function App() {
   const [currStream, setCurrStream] = useState<MediaStream | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [selectedAudioDevice, setSelectedAudioDevice] = useState<string>("");
+  const [captureSystemAudio, setCaptureSystemAudio] = useState<boolean>(true);
   const [streamInfo, setStreamInfo] = useState<StreamInfo>({
     audioDevice: "",
     videoDevice: {
@@ -94,7 +96,12 @@ function App() {
         <div id="video-box" style={{ flex: 1, background: "#000" }}>
           {/*If no video source is active then a Dark Placeholder box else replace with the LiveVideo component*/}
           {streamInfo.videoDevice.id !== "" ? (
-            <LiveVideo streamInfo={streamInfo} onStreamChange={setCurrStream} />
+            <LiveVideo 
+              streamInfo={streamInfo} 
+              onStreamChange={setCurrStream}
+              audioDeviceId={selectedAudioDevice}
+              captureSystemAudio={captureSystemAudio}
+            />
           ) : (
             <div style={{ 
               display: "flex", 
@@ -113,7 +120,10 @@ function App() {
           {currStream && (
             <div>
               <h3 style={{ margin: "0 0 0.5rem 0", textAlign: "center" }}>Recording Controls</h3>
-              <RecordBtn stream={currStream} />
+              <RecordBtn 
+                stream={currStream}
+                audioDeviceId={selectedAudioDevice}
+              />
             </div>
           )}
           
@@ -138,7 +148,19 @@ function App() {
             gap: "0.5rem"
           }}>
             <h3 id="audio-devices" style={{ margin: "0 0 0.5rem 0" }}>Audio Devices</h3>
-            <AudioDropdown audioDevices={allAudio} />
+            <AudioDropdown 
+              audioDevices={allAudio} 
+              onDeviceSelect={setSelectedAudioDevice}
+              selectedDevice={selectedAudioDevice}
+            />
+            <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.9rem" }}>
+              <input 
+                type="checkbox" 
+                checked={captureSystemAudio}
+                onChange={(e) => setCaptureSystemAudio(e.target.checked)}
+              />
+              Capture System Audio
+            </label>
           </div>
           
           <AIPrompts />
